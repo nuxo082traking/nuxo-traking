@@ -65,10 +65,25 @@
       font-size: 14px;
       opacity: 0.6;
     }
-  </style>
+    /* Animación de nieve */
+  .snowflake {
+    position: fixed;
+    top: -10px;
+    color: white;
+    font-size: 18px;
+    opacity: 0.9;
+    pointer-events: none;
+    animation: fall linear infinite;
+  }
+
+  @keyframes fall {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(100vh); }
+  }
+</style>
 </head>
 <body>
-  <header><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABmYAAAgACAYAAAA8KIwBAAAQAElEQVR4Aezd6XbcRpYt4ABniqRETSQ1yxpsyXaXXdU/+v3f51a3" alt="NUXO Logo" style="max-width:200px;"/><div>Seguimiento de Pedido</div></header>
+  <header>NUXO - SEGUIMIENTO DE PEDIDO</header>
 
   <div class="container">
     <h2>Ingresa tu número de pedido</h2>
@@ -86,37 +101,54 @@
   <div class="footer">© 2025 NUXO. Todos los derechos reservados.</div>
 
   <script>
-    // CONSULTA REAL A GOOGLE SHEETS
-    async function buscarPedido() {
-      const codigo = document.getElementById("orderInput").value.trim();
-      const resultBox = document.getElementById("resultBox");
+  const API_URL = "https://script.google.com/macros/s/AKfycbweMSKOQJqioQeSsIw_LuLDegYHLWsmLHMCIFJHgN6iJkQZ8jS_gu36BCu4Ai_8pclq/exec";
 
-      if (!codigo) return;
+  function buscarPedido() {
+    const pedido = document.getElementById("orderInput").value.trim();
+    if (!pedido) return;
 
-      try {
-        const url = "https://script.google.com/macros/s/AKfycbynnqYOFb9b9nCwS38PYmn-thYNR1fQBPWg2fZ7hieHMD_VNdOsCjk9i4J8flDn3Adp/exec?pedido=" + codigo;
-        const respuesta = await fetch(url);
-        const data = await respuesta.json();
+    const callbackName = "cb" + Math.floor(Math.random() * 999999);
 
-        if (data.error) {
-          document.getElementById("estado").innerText = "No encontramos tu pedido.";
-          document.getElementById("fecha").innerText = "";
-          document.getElementById("mensaje").innerText = "Verifica el código o contáctanos.";
-        } else {
-          document.getElementById("estado").innerText = "Estado: " + data.estado;
-          document.getElementById("fecha").innerText = "Actualizado: " + data.fecha;
-          document.getElementById("mensaje").innerText = data.mensaje;
-        }
+    window[callbackName] = function (data) {
+      const box = document.getElementById("resultBox");
 
-        resultBox.style.display = "block";
-
-      } catch (e) {
-        document.getElementById("estado").innerText = "Error al consultar el pedido.";
+      if (data.error) {
+        document.getElementById("estado").innerText = "No encontramos tu pedido.";
         document.getElementById("fecha").innerText = "";
-        document.getElementById("mensaje").innerText = "Vuelve a intentarlo en unos minutos.";
-        resultBox.style.display = "block";
+        document.getElementById("mensaje").innerText = "Verifica el código.";
+      } else {
+        document.getElementById("estado").innerText = "Estado: " + data.estado;
+        document.getElementById("fecha").innerText = "Fecha: " + (data.fecha.split('T')[0]);
+        document.getElementById("mensaje").innerText = data.mensaje;
       }
+
+      box.style.display = "block";
+      delete window[callbackName];
+    };
+
+    const script = document.createElement("script");
+    script.src = `${API_URL}?pedido=${pedido}&callback=${callbackName}`;
+    document.body.appendChild(script);
+  }
+</script>
+<script>
+  // Generar nieve navideña suave
+  function crearNieve() {
+    for (let i = 0; i < 30; i++) {
+      let snow = document.createElement("div");
+      snow.className = "snowflake";
+      snow.innerHTML = "❄";
+      snow.style.left = Math.random() * 100 + "vw";
+      snow.style.animationDuration = 5 + Math.random() * 5 + "s";
+      snow.style.fontSize = 12 + Math.random() * 10 + "px";
+      document.body.appendChild(snow);
+
+      setTimeout(() => snow.remove(), 10000);
     }
-  </script>
+  }
+
+  setInterval(crearNieve, 1500);
+</script>
+
 </body>
 </html>
