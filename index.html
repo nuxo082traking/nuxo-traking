@@ -65,25 +65,43 @@
       font-size: 14px;
       opacity: 0.6;
     }
-    /* Animación de nieve */
-  .snowflake {
+        100% { transform: translateY(100vh); }
+  }
+  /* Video de fondo */
+    /* Fondo animado camión */
+      /* Animación araña */
+  #spider {
     position: fixed;
-    top: -10px;
-    color: white;
-    font-size: 18px;
-    opacity: 0.9;
-    pointer-events: none;
-    animation: fall linear infinite;
+    top: -40px;
+    left: 20px;
+    font-size: 64px; /* más grande */
+    color: #ffffff; /* blanco */
+    z-index: 10;
+    animation: spiderMove 6s ease-in-out infinite; /* más lento */
   }
 
-  @keyframes fall {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(100vh); }
+  @keyframes spiderMove {
+    0% { top: -40px; }
+    50% { top: 120px; }
+    100% { top: -40px; }
+  }
+    50% { top: 80px; }
+    100% { top: -10px; }
+  }
+    100% { transform: translateX(-50%); }
+  }
+    100% { left: 100%; }
+  }
+    100% { left: 100%; }
   }
 </style>
 </head>
 <body>
-  <header>NUXO - SEGUIMIENTO DE PEDIDO</header>
+
+<!-- Animación araña -->
+<div id="spider">🕷️</div>
+
+<header>NUXO - SEGUIMIENTO DE PEDIDO</header>
 
   <div class="container">
     <h2>Ingresa tu número de pedido</h2>
@@ -132,22 +150,26 @@
   }
 </script>
 <script>
-  // Generar nieve navideña suave
-  function crearNieve() {
-    for (let i = 0; i < 30; i++) {
-      let snow = document.createElement("div");
-      snow.className = "snowflake";
-      snow.innerHTML = "❄";
-      snow.style.left = Math.random() * 100 + "vw";
-      snow.style.animationDuration = 5 + Math.random() * 5 + "s";
-      snow.style.fontSize = 12 + Math.random() * 10 + "px";
-      document.body.appendChild(snow);
+  // Animación de envío: avión + camión
+  const ruta = document.createElement("div");
+  ruta.style.position = "fixed";
+  ruta.style.bottom = "20px";
+  ruta.style.left = "-100%";
+  ruta.style.width = "100%";
+  ruta.style.fontSize = "20px";
+  ruta.style.whiteSpace = "nowrap";
+  ruta.style.animation = "viaje 15s linear infinite";
+  ruta.innerHTML = "";
+  document.body.appendChild(ruta);
 
-      setTimeout(() => snow.remove(), 10000);
+  const styleAnim = document.createElement("style");
+  styleAnim.innerHTML = `
+    @keyframes viaje {
+      0% { left: -100%; }
+      100% { left: 100%; }
     }
-  }
-
-  setInterval(crearNieve, 1500);
+  `;
+  document.head.appendChild(styleAnim);
 </script>
 
 </body>
